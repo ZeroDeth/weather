@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	resp, err := http.Get("https://api.openweathermap.org/data/2.5/weather?q=London&appid=3b814c61996538f2e8a2b921e23bbb0a")
+	resp, err := http.Get("https://api.openweathermap.org/data/2.5/weather?q=London&appid=XXX")
 	if err != nil {
 		log.Fatal(err)
 	}
