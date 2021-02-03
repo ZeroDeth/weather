@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -9,7 +10,10 @@ import (
 )
 
 func main() {
-	resp, err := http.Get("https://api.openweathermap.org/data/2.5/weather?q=London&appid=XXX")
+	API := os.Getenv("OPENWEATHERAPI")
+	URL := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?q=London&appid=%s", API)
+
+	resp, err := http.Get(URL)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -18,7 +22,12 @@ func main() {
 		os.Exit(1)
 	}
 	defer resp.Body.Close()
-	weather, err := weather.Decode(resp.Body)
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+	weather, err := weather.Decode(data)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
