@@ -53,3 +53,14 @@ func TestGetData(t *testing.T) {
 	}
 }
 
+func TestEmoji (t *testing.T) {
+  t.Parallel()
+  input := "Sunny 7.4C"
+  want := "☀️ 7.4C"
+  got := weather.Emoji(input)
+
+  if want != got {
+    t.Errorf("want %q, got %q", want, got)
+  }
+}
+
