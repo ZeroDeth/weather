@@ -68,3 +68,15 @@ func Conditions(location, APIKey string) (string, error) {
 	}
 	return conditions, nil
 }
+func Emoji(Input string) string {
+	var emoji string
+	var summary string
+	summary = Input
+
+	switch summary {
+	case "Sunny":
+		emoji = "☀️"
+	}
+
+	return emoji
+}
