@@ -16,9 +16,10 @@ func main() {
 		log.Fatal("Usage: weather LOCATION (for example, 'weather London')")
 	}
 	location := os.Args[1]
-	conditions, err := weather.Conditions(location, APIKey)
+	summary, temp, err := weather.Conditions(location, APIKey)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("The weather is: %s\n", conditions)
+	emoji := weather.Emoji(summary)
+	fmt.Printf("%s %.1fC\n", emoji, temp)
 }

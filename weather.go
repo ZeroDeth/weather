@@ -30,13 +30,13 @@ type APIResponse struct{
 	}
 }
 
-func Decode(data []byte) (string, error) {
+func Decode(data []byte) (summary string, temp float64, err error) {
 	var result APIResponse
-	err := json.Unmarshal(data, &result)
+	err = json.Unmarshal(data, &result)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
-	return fmt.Sprintf("%s %.1fC", result.Weather[0].Main, result.Main.Temp-273.15), nil
+	return result.Weather[0].Main, result.Main.Temp-273.15, nil
 }
 
 func (c Client) GetData(location string) ([]byte, error) {
@@ -56,27 +56,24 @@ func (c Client) GetData(location string) ([]byte, error) {
 	return data, nil
 }
 
-func Conditions(location, APIKey string) (string, error) {
+func Conditions(location, APIKey string) (string, float64, error) {
 	client := NewClient(APIKey)
 	data, err := client.GetData(location)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
-	conditions, err := Decode(data)
+	summary, temp, err := Decode(data)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
-	return conditions, nil
+	return summary, temp, nil
 }
-func Emoji(Input string) string {
-	var emoji string
-	var summary string
-	summary = Input
 
-	switch summary {
-	case "Sunny":
-		emoji = "☀️"
-	}
+var emoji = map[string]string{
+	"Sunny": "☀️",
+	"Clouds": "☁️",
+}
 
-	return emoji
+func Emoji(input string) string {
+	return emoji[input]
 }
