@@ -39,7 +39,7 @@ func TestGetData(t *testing.T) {
 	if APIKey == "" {
 		t.Fatal("OPENWEATHERMAP_API_KEY environment variable must be set")
 	}
-	ts := httptest.NewTLSServer(http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
+	ts := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		wantURL := "/data/2.5/weather?q=London&appid="
 		gotURL := fmt.Sprintf("%s?%s", r.URL.Path, r.URL.RawQuery)
 		if !strings.HasPrefix(gotURL, wantURL) {
@@ -72,23 +72,21 @@ func TestGetData(t *testing.T) {
 	}
 }
 
-func TestEmoji (t *testing.T) {
-  t.Parallel()
-  tcs := []struct{
-	  input string
-	  want string
-  }{
-	  { input: "Sunny", want: "☀️" },
-	  { input: "Clear", want: "☀️" },
-	  { input: "Clouds", want: "☁️" },
+func TestEmoji(t *testing.T) {
+	t.Parallel()
+	tcs := []struct {
+		input string
+		want  string
+	}{
+		{input: "Sunny", want: "☀️"},
+		{input: "Clear", want: "☀️"},
+		{input: "Clouds", want: "☁️"},
+	}
+	for _, tc := range tcs {
+		got := weather.Emoji(tc.input)
 
-  }
-  for _, tc := range tcs {
-	  got := weather.Emoji(tc.input)
-
-	  if tc.want != got {
-	    t.Errorf("for input %q, want %q, got %q", tc.input, tc.want, got)
-	  }
-  }
+		if tc.want != got {
+			t.Errorf("for input %q, want %q, got %q", tc.input, tc.want, got)
+		}
+	}
 }
-

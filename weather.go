@@ -10,8 +10,8 @@ import (
 
 type Client struct {
 	HTTPClient *http.Client
-	URL string
-	APIKey string
+	URL        string
+	APIKey     string
 }
 
 func NewClient(APIKey string) (Client, error) {
@@ -20,16 +20,16 @@ func NewClient(APIKey string) (Client, error) {
 	}
 	return Client{
 		HTTPClient: http.DefaultClient,
-		URL: "https://api.openweathermap.org",
-		APIKey: APIKey,
+		URL:        "https://api.openweathermap.org",
+		APIKey:     APIKey,
 	}, nil
 }
 
-type APIResponse struct{
-	Weather []struct{
+type APIResponse struct {
+	Weather []struct {
 		Main string
 	}
-	Main struct{
+	Main struct {
 		Temp float64
 	}
 }
@@ -40,7 +40,7 @@ func Decode(data []byte) (summary string, temp float64, err error) {
 	if err != nil {
 		return "", 0, err
 	}
-	return result.Weather[0].Main, result.Main.Temp-273.15, nil
+	return result.Weather[0].Main, result.Main.Temp - 273.15, nil
 }
 
 func (c Client) GetData(location string) ([]byte, error) {
@@ -77,8 +77,8 @@ func Conditions(location, APIKey string) (string, float64, error) {
 }
 
 var emoji = map[string]string{
-	"Sunny": "☀️",
-	"Clear": "☀️",
+	"Sunny":  "☀️",
+	"Clear":  "☀️",
 	"Clouds": "☁️",
 }
 
