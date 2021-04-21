@@ -36,6 +36,9 @@ func TestDecode(t *testing.T) {
 func TestGetData(t *testing.T) {
 	t.Parallel()
 	APIKey := os.Getenv("OPENWEATHERMAP_API_KEY")
+	if APIKey == "" {
+		t.Fatal("OPENWEATHERMAP_API_KEY environment variable must be set")
+	}
 	ts := httptest.NewTLSServer(http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
 		wantURL := "/data/2.5/weather?q=London&appid="
 		gotURL := fmt.Sprintf("%s?%s", r.URL.Path, r.URL.RawQuery)
@@ -45,7 +48,10 @@ func TestGetData(t *testing.T) {
 		fmt.Fprintln(w, rawJSON)
 	}))
 	location := "London"
-	client := weather.NewClient(APIKey)
+	client, err := weather.NewClient(APIKey)
+	if err != nil {
+		t.Fatal(err)
+	}
 	client.HTTPClient = ts.Client()
 	client.URL = ts.URL
 	data, err := client.GetData(location)

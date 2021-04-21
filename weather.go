@@ -2,6 +2,7 @@ package weather
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -13,12 +14,15 @@ type Client struct {
 	APIKey string
 }
 
-func NewClient(APIKey string) Client {
+func NewClient(APIKey string) (Client, error) {
+	if APIKey == "" {
+		return Client{}, errors.New("API key must not be empty")
+	}
 	return Client{
 		HTTPClient: http.DefaultClient,
 		URL: "https://api.openweathermap.org",
 		APIKey: APIKey,
-	}
+	}, nil
 }
 
 type APIResponse struct{
@@ -57,7 +61,10 @@ func (c Client) GetData(location string) ([]byte, error) {
 }
 
 func Conditions(location, APIKey string) (string, float64, error) {
-	client := NewClient(APIKey)
+	client, err := NewClient(APIKey)
+	if err != nil {
+		return "", 0, err
+	}
 	data, err := client.GetData(location)
 	if err != nil {
 		return "", 0, err
