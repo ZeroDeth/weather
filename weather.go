@@ -3,9 +3,12 @@ package weather
 import (
 	"encoding/json"
 	"errors"
+	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
 )
 
 type Client struct {
@@ -84,4 +87,36 @@ var emoji = map[string]string{
 
 func Emoji(input string) string {
 	return emoji[input]
+}
+
+func ParseArgs(args []string) (emojiMode, fahrenheitMode bool, location string) {
+	fs := flag.NewFlagSet("", flag.ContinueOnError)
+	fs.BoolVar(&emojiMode, "emoji", false, "emoji mod")
+	fs.Parse(args)
+	location = fs.Arg(0)
+	return emojiMode, fahrenheitMode, location
+}
+
+func RunCLI(args []string) error {
+	APIKey := os.Getenv("OPENWEATHERMAP_API_KEY")
+	if APIKey == "" {
+		log.Fatal("OPENWEATHERMAP_API_KEY environment variable must be set")
+	}
+	emoji, fahrenheit, location := ParseArgs(args)
+	if location == "" {
+		return fmt.Errorf("Usage: weather LOCATION\n\nExample: weather London\n")
+	}
+	fmt.Printf("requesting weather for %q\n", location)
+	summary, temp, err := Conditions(location, APIKey)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("fahrenheit mode", fahrenheit)
+	if emoji {
+		emoji := Emoji(summary)
+		fmt.Printf("%s %.1fC\n", emoji, temp)
+	} else {
+		fmt.Printf("%s %.1fC\n", summary, temp)
+	}
+	return nil
 }

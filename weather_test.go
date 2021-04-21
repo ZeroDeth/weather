@@ -90,3 +90,44 @@ func TestEmoji(t *testing.T) {
 		}
 	}
 }
+
+func TestParseArgs(t *testing.T) {
+	t.Parallel()
+	tcs := []struct {
+		input []string
+		wantEmojiMode  bool
+		wantFahrenheitMode  bool
+		wantLocation string
+	}{
+		{
+			input: []string{"-emoji", "london"},
+			wantEmojiMode: true,
+			wantFahrenheitMode: false,
+			wantLocation: "london",
+		},
+		{
+			input: []string{"london"},
+			wantEmojiMode: false,
+			wantFahrenheitMode: false,
+			wantLocation: "london",
+		},
+		{
+			input: []string{"-fahrenheit", "london"},
+			wantEmojiMode: false,
+			wantFahrenheitMode: true,
+			wantLocation: "london",
+		},
+	}
+	for _, tc := range tcs {
+		emojiMode, fahrenheitMode, location := weather.ParseArgs(tc.input)
+		if tc.wantEmojiMode != emojiMode {
+			t.Errorf("for input %q, want emoji mode %t, got %t", tc.input, tc.wantEmojiMode, emojiMode)
+		}
+		if tc.wantFahrenheitMode != fahrenheitMode {
+			t.Errorf("for input %q, want fahrenheit mode %t, got %t", tc.input, tc.wantFahrenheitMode, fahrenheitMode)
+		}
+		if tc.wantLocation != location {
+			t.Errorf("for input %q, want location %q, got %q", tc.input, tc.wantLocation, location)
+		}
+	}
+}
