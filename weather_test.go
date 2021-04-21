@@ -74,12 +74,21 @@ func TestGetData(t *testing.T) {
 
 func TestEmoji (t *testing.T) {
   t.Parallel()
-  input := "Sunny"
-  want := "☀️"
-  got := weather.Emoji(input)
+  tcs := []struct{
+	  input string
+	  want string
+  }{
+	  { input: "Sunny", want: "☀️" },
+	  { input: "Clear", want: "☀️" },
+	  { input: "Clouds", want: "☁️" },
 
-  if want != got {
-    t.Errorf("want %q, got %q", want, got)
+  }
+  for _, tc := range tcs {
+	  got := weather.Emoji(tc.input)
+
+	  if tc.want != got {
+	    t.Errorf("for input %q, want %q, got %q", tc.input, tc.want, got)
+	  }
   }
 }
 

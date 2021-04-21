@@ -17,6 +17,11 @@ func main() {
 		log.Fatal("OPENWEATHERMAP_API_KEY environment variable must be set")
 	}
 	location := flag.Arg(0)
+	if location == "" {
+		fmt.Printf("Usage: %s LOCATION\n\nExample: %s London\n", os.Args[0], os.Args[0])
+		os.Exit(1)
+	}
+	fmt.Printf("requesting weather for %q\n", location)
 	summary, temp, err := weather.Conditions(location, APIKey)
 	if err != nil {
 		log.Fatal(err)

@@ -78,6 +78,7 @@ func Conditions(location, APIKey string) (string, float64, error) {
 
 var emoji = map[string]string{
 	"Sunny": "☀️",
+	"Clear": "☀️",
 	"Clouds": "☁️",
 }
 
